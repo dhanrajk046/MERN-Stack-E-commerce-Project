@@ -7,11 +7,13 @@ dotenv.config();
 connectDB();
 
 const app = express();
+app.use(cors());
+app.use(express.json());
 app.get("/", (req, res) => {
   res.send("ShopNest Backend is working properly!");
 });
 
-app.use('api/auth', require('./routes/authRoutes.js'));
+app.use("/api/auth", userRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
