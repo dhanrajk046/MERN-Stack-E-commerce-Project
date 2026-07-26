@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db.js");
-const userRoutes = require("./routes/authRoutes.js");
 dotenv.config();
 connectDB();
 
@@ -15,10 +14,10 @@ app.get("/", (req, res) => {
 });
 
 app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/products', require('./routes/productsRoutes.js/index.js'));
-app.use('/api/orders', require('./routes/orderroutes.js/index.js'));
-app.use('/api/payments', require('./routes/paymentsRoutes.js/index.js'));
-app.use('/api/analytics', require('./routes/analyticsRoutes'));
+app.use('/api/products', require('./routes/productRoutes.js'));
+app.use('/api/orders', require('./routes/orderRoutes.js'));
+// app.use('/api/payments', require('./routes/paymentsRoutes.js'));
+// app.use('/api/analytics', require('./routes/analyticsRoutes.js'));
 
 
 const PORT = process.env.PORT || 5000;
