@@ -14,4 +14,5 @@ router.post("/verify-email", async (req, res) => {
   const { email } = req.body;
   //Implementationfor email verification
 });
+
 module.exports = router;
