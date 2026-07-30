@@ -1,0 +1,31 @@
+{
+  "name": "shopnest-full-stack",
+  "version": "1.0.0",
+  "description": "ShopNest - Full-Stack MERN E-Commerce App\r A professionally engineered, full-stack E-commerce platform built strictly using modern standard React (CRA) on the frontend and Express/MongoDB on the backend.",
+  "keywords": [
+    "ecommerce",
+    "microservice"
+  ],
+  "homepage": "https://github.com/dhanrajk046/MERN-Stack-E-commerce-Project#readme",
+  "bugs": {
+    "url": "https://github.com/dhanrajk046/MERN-Stack-E-commerce-Project/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dhanrajk046/MERN-Stack-E-commerce-Project.git"
+  },
+  "license": "ISC",
+  "author": "Dhanraj",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "install": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:server": "cd backend && npm run dev",
+    "dev:client": "cd frontend && npm start",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "build":"cd frontend && npm run build"
+  },
+  "dependencies": {
+    "concurrently": "^10.0.4"
+  }
+}
