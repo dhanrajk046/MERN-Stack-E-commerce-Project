@@ -1,0 +1,603 @@
+{
+  "info": {
+    "_postman_id": "51024cae-756e-4a83-965b-b0b44fc561d0",
+    "name": "ShopNest - MERN",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53501161",
+    "_collection_link": "https://go.postman.co/collection/53501161-51024cae-756e-4a83-965b-b0b44fc561d0?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "AUTH",
+      "item": [
+        {
+          "name": "ADMIN -- GET ALL USERS",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\":\"Dhanraj\",\r\n  \"email\": \"user123@gmail.com\",\r\n  \"password\": \"password123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/api/auth/register",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\":\"Dhanraj\",\r\n  \"email\": \"user123@gmail.com\",\r\n  \"password\": \"password123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/api/auth/register",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\":\"Dhanraj\",\r\n  \"email\": \"user123@gmail.com\",\r\n  \"password\": \"password123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{endpoint}}/api/auth/register",
+              "host": [
+                "{{endpoint}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get One Product",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "ADMIN -- Create New Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_ADMIN_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "type": "text",
+                  "key": "name",
+                  "value": "Wireless Headphones"
+                },
+                {
+                  "type": "text",
+                  "key": "description",
+                  "value": "Noise-cancelling Bluetooth headphones"
+                },
+                {
+                  "type": "text",
+                  "key": "price",
+                  "value": "2999"
+                },
+                {
+                  "type": "text",
+                  "key": "category",
+                  "value": "Electronics"
+                },
+                {
+                  "type": "text",
+                  "key": "stock",
+                  "value": "20"
+                },
+                {
+                  "type": "file",
+                  "key": "image",
+                  "src": "C:/path/to/product-image.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/products",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "Generated from cURL: curl --request POST \"http://localhost:5000/api/products\" \\\r\n  --header \"Authorization: Bearer YOUR_ADMIN_JWT_TOKEN\" \\\r\n  --form \"name=Wireless Headphones\" \\\r\n  --form \"description=Noise-cancelling Bluetooth headphones\" \\\r\n  --form \"price=2999\" \\\r\n  --form \"category=Electronics\" \\\r\n  --form \"stock=20\" \\\r\n  --form \"image=@C:/path/to/product-image.jpg\""
+          },
+          "response": []
+        },
+        {
+          "name": "ADMIN -- Edit Single Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{supabase_service_role_api_key_19mq}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_ADMIN_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "type": "text",
+                  "value": "Updated Wireless Headphones"
+                },
+                {
+                  "key": "price",
+                  "type": "text",
+                  "value": "3499"
+                },
+                {
+                  "key": "stock",
+                  "type": "text",
+                  "value": "15"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/products/6a6491b77738a4f0d79e58ff",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "products",
+                "6a6491b77738a4f0d79e58ff"
+              ]
+            },
+            "description": "Generated from cURL: curl --request PUT \"http://localhost:5000/api/products/PRODUCT_ID\" \\\r\n  --header \"Authorization: Bearer YOUR_ADMIN_JWT_TOKEN\" \\\r\n  --form \"name=Updated Wireless Headphones\" \\\r\n  --form \"price=3499\" \\\r\n  --form \"stock=15\" \\\r\n  --form \"image=@C:/path/to/new-product-image.jpg\""
+          },
+          "response": []
+        },
+        {
+          "name": "ADMIN -- Delete Single Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{supabase_service_role_api_key_19mq}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_ADMIN_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "type": "text",
+                  "value": "Updated Wireless Headphones"
+                },
+                {
+                  "key": "price",
+                  "type": "text",
+                  "value": "3499"
+                },
+                {
+                  "key": "stock",
+                  "type": "text",
+                  "value": "15"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/products/6a6491b77738a4f0d79e58ff",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "products",
+                "6a6491b77738a4f0d79e58ff"
+              ]
+            },
+            "description": "Generated from cURL: curl --request PUT \"http://localhost:5000/api/products/PRODUCT_ID\" \\\r\n  --header \"Authorization: Bearer YOUR_ADMIN_JWT_TOKEN\" \\\r\n  --form \"name=Updated Wireless Headphones\" \\\r\n  --form \"price=3499\" \\\r\n  --form \"stock=15\" \\\r\n  --form \"image=@C:/path/to/new-product-image.jpg\""
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Place A Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_19mq}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"items\": [\r\n      {\r\n        \"product\": \"6a65c1f5938985db98fbfd73\",\r\n        \"quantity\": 2\r\n      }\r\n    ]\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST http://localhost:5000/api/orders \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\r\n  -d '{\r\n    \"items\": [\r\n      {\r\n        \"product\": \"YOUR_PRODUCT_ID\",\r\n        \"quantity\": 2\r\n      }\r\n    ]\r\n  }'"
+          },
+          "response": []
+        },
+        {
+          "name": "ADMIN--ALL ORDERS",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_19mq}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"items\": [\r\n      {\r\n        \"product\": \"YOUR_PRODUCT_ID\",\r\n        \"quantity\": 2\r\n      }\r\n    ]\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST http://localhost:5000/api/orders \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\r\n  -d '{\r\n    \"items\": [\r\n      {\r\n        \"product\": \"YOUR_PRODUCT_ID\",\r\n        \"quantity\": 2\r\n      }\r\n    ]\r\n  }'"
+          },
+          "response": []
+        },
+        {
+          "name": "ADMIN--Update ORDER Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_19mq}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"items\": [\r\n      {\r\n        \"product\": \"YOUR_PRODUCT_ID\",\r\n        \"quantity\": 2\r\n      }\r\n    ]\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST http://localhost:5000/api/orders \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\r\n  -d '{\r\n    \"items\": [\r\n      {\r\n        \"product\": \"YOUR_PRODUCT_ID\",\r\n        \"quantity\": 2\r\n      }\r\n    ]\r\n  }'"
+          },
+          "response": []
+        },
+        {
+          "name": "My Orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_19mq}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"items\": [\r\n      {\r\n        \"product\": \"YOUR_PRODUCT_ID\",\r\n        \"quantity\": 2\r\n      }\r\n    ]\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST http://localhost:5000/api/orders \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -H \"Authorization: Bearer YOUR_JWT_TOKEN\" \\\r\n  -d '{\r\n    \"items\": [\r\n      {\r\n        \"product\": \"YOUR_PRODUCT_ID\",\r\n        \"quantity\": 2\r\n      }\r\n    ]\r\n  }'"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "ADMIN -- Analytics",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_19mq}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_JWT_TOKEN"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"items\": [\r\n      {\r\n        \"product\": \"YOUR_PRODUCT_ID\",\r\n        \"quantity\": 2\r\n      }\r\n    ]\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/analytics",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "analytics"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "endpoint",
+      "value": ""
+    },
+    {
+      "key": "supabase_service_role_api_key_19mq",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_19mq",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_19mq",
+      "secret": true
+    }
+  ]
+}

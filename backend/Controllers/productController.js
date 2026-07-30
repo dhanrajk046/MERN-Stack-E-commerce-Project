@@ -60,9 +60,12 @@ const createProduct = async (req, res) => {
     });
 
     const savedProduct = await product.save();
-    res.status(201).json(savedProduct);
+    return res.status(201).json(savedProduct);
   } catch (error) {
     console.error("Error creating product:", error);
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
     return res.status(500).json({ message: "Unable to create product" });
   }
 };

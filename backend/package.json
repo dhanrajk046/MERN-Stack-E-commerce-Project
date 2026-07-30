@@ -11,7 +11,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node --use-system-ca index.js",
-    "dev": "nodemon --exec \"node --use-system-ca\" index.js"
+    "dev": "nodemon --exec \"node --use-system-ca\" index.js",
+    "seed": "node --use-system-ca seed.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

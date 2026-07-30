@@ -1,6 +1,7 @@
 const Order = require("../model/Order");
 const Product = require("../model/Product");
 const sendEmail = require("../utils/sendEmail");
+const { createPaymentIntentForOrder } = require('./paymentController');
 
 const createOrder = async (req, res) => {
   const { items } = req.body;
@@ -45,19 +46,21 @@ const createOrder = async (req, res) => {
       totalPrice += product.price * quantity;
     }
 
+    // Product prices are always read from MongoDB, never accepted from the client.
     const order = await Order.create({
       user: req.user._id,
       items: orderItems,
       totalPrice,
     });
 
-    await Promise.all(
-      orderItems.map((item) =>
-        Product.findByIdAndUpdate(item.product, {
-          $inc: { stock: -item.quantity },
-        }),
-      ),
-    );
+    let paymentIntent;
+    try {
+      paymentIntent = await createPaymentIntentForOrder(order);
+    } catch (paymentError) {
+      // Do not leave an unpayable order in the database.
+      await order.deleteOne();
+      throw paymentError;
+    }
 
     const itemSummary = orderItems
       .map(
@@ -69,13 +72,13 @@ const createOrder = async (req, res) => {
     const message = [
       `Hi ${customerName},`,
       "",
-      `Thank you for your order at ShopNest. Your order #${order._id} has been placed successfully.`,
+      `Your ShopNest order #${order.orderId} is ready for payment.`,
       "",
       "Order summary:",
       itemSummary,
       "",
       `Total: INR ${totalPrice.toFixed(2)}`,
-      `Status: ${order.status}`,
+      `Payment status: ${order.payment.status}`,
       "",
       "We will notify you when your order status changes.",
     ].join("\n");
@@ -83,7 +86,7 @@ const createOrder = async (req, res) => {
     // A delivery failure must not undo an order that was successfully saved.
     const emailSent = await sendEmail(
       req.user.email,
-      `ShopNest order confirmation #${order._id}`,
+      `ShopNest checkout #${order.orderId}`,
       message,
     );
     if (!emailSent) {
@@ -92,7 +95,12 @@ const createOrder = async (req, res) => {
       );
     }
 
-    return res.status(201).json(order);
+    return res.status(201).json({
+      order,
+      orderId: order.orderId,
+      clientSecret: paymentIntent.client_secret,
+      paymentIntentId: paymentIntent.id,
+    });
   } catch (error) {
     console.error("Error creating order:", error);
     return res.status(500).json({ message: "Unable to create order" });
@@ -125,7 +133,12 @@ const getMyOrders = async (req, res) => {
 
 const getOrderById = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id).populate(
+    const lookup = { orderId: req.params.id };
+    if (require('mongoose').isValidObjectId(req.params.id)) {
+      lookup.$or = [{ _id: req.params.id }, { orderId: req.params.id }];
+      delete lookup.orderId;
+    }
+    const order = await Order.findOne(lookup).populate(
       "user",
       "name email",
     );
@@ -159,8 +172,11 @@ const updateOrderStatus = async (req, res) => {
   }
 
   try {
-    const order = await Order.findByIdAndUpdate(
-      req.params.id,
+    const filter = require('mongoose').isValidObjectId(req.params.id)
+      ? { $or: [{ _id: req.params.id }, { orderId: req.params.id }] }
+      : { orderId: req.params.id };
+    const order = await Order.findOneAndUpdate(
+      filter,
       { status: req.body.status },
       { new: true, runValidators: true },
     );

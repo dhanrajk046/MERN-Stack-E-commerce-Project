@@ -1,32 +1,41 @@
-const Stripe = require('stripe');
+const Order = require('../model/Order');
+const Product = require('../model/Product');
+const { getStripeClient } = require('../config/stripe');
 
-const getStripeClient = () => {
-  if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error('Stripe secret key is not configured');
-  }
+const createPaymentIntentForOrder = async (order) => {
+  const paymentIntent = await getStripeClient().paymentIntents.create({
+    amount: Math.round(order.totalPrice * 100),
+    currency: 'inr',
+    automatic_payment_methods: { enabled: true },
+    metadata: {
+      orderId: order.orderId,
+      mongoOrderId: order._id.toString(),
+      userId: order.user.toString(),
+    },
+  });
 
-  return new Stripe(process.env.STRIPE_SECRET_KEY);
+  order.payment.paymentIntentId = paymentIntent.id;
+  await order.save();
+  return paymentIntent;
 };
 
 const createPaymentIntent = async (req, res) => {
-  const amount = Number(req.body.amount);
-  const currency = (req.body.currency || 'usd').toLowerCase();
-
-  if (!Number.isFinite(amount) || amount <= 0) {
-    return res.status(400).json({ message: 'A valid payment amount is required' });
-  }
+  const { orderId } = req.body;
+  if (!orderId) return res.status(400).json({ message: 'orderId is required' });
 
   try {
-    const paymentIntent = await getStripeClient().paymentIntents.create({
-      amount: Math.round(amount * 100),
-      currency,
-      automatic_payment_methods: { enabled: true },
-      metadata: { userId: req.user._id.toString() },
-    });
+    const order = await Order.findOne({ orderId, user: req.user._id });
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (order.payment.status === 'paid') return res.status(409).json({ message: 'Order is already paid' });
+
+    const paymentIntent = order.payment.paymentIntentId
+      ? await getStripeClient().paymentIntents.retrieve(order.payment.paymentIntentId)
+      : await createPaymentIntentForOrder(order);
 
     return res.status(201).json({
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
+      orderId: order.orderId,
     });
   } catch (error) {
     console.error('Error creating Stripe PaymentIntent:', error.message);
@@ -59,4 +68,50 @@ const getPaymentIntent = async (req, res) => {
   }
 };
 
-module.exports = { createPaymentIntent, getPaymentIntent };
+const confirmOrderPayment = async (req, res) => {
+  try {
+    const order = await Order.findOne({ orderId: req.params.orderId, user: req.user._id });
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (order.payment.status === 'paid') return res.json(order);
+    if (!order.payment.paymentIntentId) return res.status(400).json({ message: 'No payment was started for this order' });
+
+    const paymentIntent = await getStripeClient().paymentIntents.retrieve(order.payment.paymentIntentId);
+    if (paymentIntent.status !== 'succeeded' || paymentIntent.metadata.mongoOrderId !== order._id.toString()) {
+      return res.status(400).json({ message: 'Payment has not succeeded yet' });
+    }
+
+    // Only one confirmation can move this order into processing.
+    const lockedOrder = await Order.findOneAndUpdate(
+      { _id: order._id, 'payment.status': { $in: ['pending', 'failed'] } },
+      { $set: { 'payment.status': 'processing' } },
+      { new: true },
+    );
+    if (!lockedOrder) return res.json(await Order.findById(order._id));
+
+    const reducedProducts = [];
+    for (const item of lockedOrder.items) {
+      const result = await Product.updateOne(
+        { _id: item.product, stock: { $gte: item.quantity } },
+        { $inc: { stock: -item.quantity } },
+      );
+      if (result.modifiedCount !== 1) {
+        await Promise.all(reducedProducts.map((reduced) => Product.updateOne({ _id: reduced.product }, { $inc: { stock: reduced.quantity } })));
+        await Order.updateOne({ _id: order._id }, { $set: { 'payment.status': 'failed' } });
+        return res.status(409).json({ message: `Insufficient stock for ${item.name}. Payment was successful; contact support for a refund.` });
+      }
+      reducedProducts.push(item);
+    }
+
+    const paidOrder = await Order.findByIdAndUpdate(
+      order._id,
+      { $set: { 'payment.status': 'paid', 'payment.paidAt': new Date(), status: 'processing' } },
+      { new: true },
+    );
+    return res.json(paidOrder);
+  } catch (error) {
+    console.error('Error confirming payment:', error.message);
+    return res.status(500).json({ message: 'Unable to confirm payment' });
+  }
+};
+
+module.exports = { createPaymentIntent, createPaymentIntentForOrder, getPaymentIntent, confirmOrderPayment };
