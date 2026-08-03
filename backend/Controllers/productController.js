@@ -6,6 +6,7 @@ const getProducts = async (req, res) => {
     const products = await Product.find({});
     return res.json(products);
   } catch (error) {
+    console.error("Error fetching products:", error);
     return res.status(500).json({ message: "Server error" });
   }
 };
