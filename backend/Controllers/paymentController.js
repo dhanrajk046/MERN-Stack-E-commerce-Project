@@ -19,6 +19,65 @@ const createPaymentIntentForOrder = async (order) => {
   return paymentIntent;
 };
 
+const getPaymentConfig = (req, res) => {
+  if (!process.env.STRIPE_PUBLISHABLE_KEY) {
+    return res.status(503).json({ message: 'Payments are not configured' });
+  }
+
+  return res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
+};
+
+const createCheckoutSession = async (req, res) => {
+  const { orderId } = req.body;
+  if (!orderId) return res.status(400).json({ message: 'orderId is required' });
+
+  try {
+    const order = await Order.findOne({ orderId, user: req.user._id });
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (order.payment.status === 'paid') return res.status(409).json({ message: 'Order is already paid' });
+
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const session = await getStripeClient().checkout.sessions.create({
+      mode: 'payment',
+      line_items: order.items.map((item) => ({
+        price_data: {
+          currency: 'inr',
+          product_data: { name: item.name },
+          unit_amount: Math.round(item.price * 100),
+        },
+        quantity: item.quantity,
+      })),
+      metadata: { orderId: order.orderId, userId: req.user._id.toString() },
+      success_url: `${frontendUrl}/payment-return?orderId=${encodeURIComponent(order.orderId)}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${frontendUrl}/checkout`,
+    });
+
+    return res.json({ sessionId: session.id, url: session.url });
+  } catch (error) {
+    console.error('Error creating Stripe Checkout Session:', error.message);
+    return res.status(500).json({ message: 'Unable to start secure checkout' });
+  }
+};
+
+const getCheckoutSession = async (req, res) => {
+  try {
+    const session = await getStripeClient().checkout.sessions.retrieve(req.params.sessionId);
+    if (session.metadata.userId !== req.user._id.toString()) return res.status(403).json({ message: 'Not authorized to view this payment' });
+
+    if (session.payment_status === 'paid') {
+      await Order.updateOne(
+        { orderId: session.metadata.orderId, user: req.user._id },
+        { $set: { 'payment.paymentIntentId': session.payment_intent } },
+      );
+    }
+
+    return res.json({ orderId: session.metadata.orderId, verified: session.payment_status === 'paid' });
+  } catch (error) {
+    console.error('Error retrieving Stripe Checkout Session:', error.message);
+    return res.status(500).json({ message: 'Unable to verify checkout session' });
+  }
+};
+
 const createPaymentIntent = async (req, res) => {
   const { orderId } = req.body;
   if (!orderId) return res.status(400).json({ message: 'orderId is required' });
@@ -114,4 +173,4 @@ const confirmOrderPayment = async (req, res) => {
   }
 };
 
-module.exports = { createPaymentIntent, createPaymentIntentForOrder, getPaymentIntent, confirmOrderPayment };
+module.exports = { getPaymentConfig, createCheckoutSession, getCheckoutSession, createPaymentIntent, createPaymentIntentForOrder, getPaymentIntent, confirmOrderPayment };

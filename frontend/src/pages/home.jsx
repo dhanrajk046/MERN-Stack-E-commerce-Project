@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { productsApi } from '../services/api';
 
@@ -34,6 +35,11 @@ const Home = () => {
           {products.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
+        </div>
+      )}
+      {!loading && products.length > 0 && (
+        <div className="home-products-link">
+          <Link to="/shop" className="btn">View all products</Link>
         </div>
       )}
     </div>

@@ -8,10 +8,10 @@
   "license": "ISC",
   "author": "Dhanraj",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node --use-system-ca index.js",
-    "dev": "nodemon --exec \"node --use-system-ca\" index.js",
+    "start": "node --use-system-ca server.js",
+    "dev": "nodemon --exec \"node --use-system-ca\" server.js",
     "seed": "node --use-system-ca seed.js"
   },
   "dependencies": {

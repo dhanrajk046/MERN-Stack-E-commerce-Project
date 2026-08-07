@@ -44,7 +44,7 @@ export const authApi = {
 };
 
 export const ordersApi = {
-  create: (items) => request("/orders", jsonRequest("POST", { items })),
+  create: (items, shippingAddress) => request("/orders", jsonRequest("POST", { items, shippingAddress })),
   list: () => request("/orders"),
   mine: () => request("/orders/myorders"),
   getById: (orderId) => request(`/orders/${orderId}`),
@@ -54,6 +54,9 @@ export const ordersApi = {
 };
 
 export const paymentsApi = {
+  config: () => request('/payments/config'),
+  createCheckoutSession: (orderId) => request('/payments/create-checkout-session', jsonRequest('POST', { orderId })),
+  getCheckoutSession: (sessionId) => request(`/payments/checkout-sessions/${sessionId}`),
   createIntent: (orderId) =>
     request("/payments/create-payment-intent", jsonRequest("POST", { orderId })),
   getIntent: (paymentIntentId) => request(`/payments/payment-intents/${paymentIntentId}`),

@@ -1,15 +1,19 @@
 const Order = require("../model/Order");
 const Product = require("../model/Product");
 const sendEmail = require("../utils/sendEmail");
-const { createPaymentIntentForOrder } = require('./paymentController');
 
 const createOrder = async (req, res) => {
-  const { items } = req.body;
+  const { items, shippingAddress } = req.body;
 
   if (!Array.isArray(items) || items.length === 0) {
     return res
       .status(400)
       .json({ message: "An order must contain at least one item" });
+  }
+
+  const addressFields = ['fullName', 'street', 'city', 'postalCode', 'country'];
+  if (!shippingAddress || addressFields.some((field) => !String(shippingAddress[field] || '').trim())) {
+    return res.status(400).json({ message: 'A complete shipping address is required' });
   }
 
   try {
@@ -51,16 +55,9 @@ const createOrder = async (req, res) => {
       user: req.user._id,
       items: orderItems,
       totalPrice,
+      shippingAddress,
     });
 
-    let paymentIntent;
-    try {
-      paymentIntent = await createPaymentIntentForOrder(order);
-    } catch (paymentError) {
-      // Do not leave an unpayable order in the database.
-      await order.deleteOne();
-      throw paymentError;
-    }
 
     const itemSummary = orderItems
       .map(
@@ -72,7 +69,7 @@ const createOrder = async (req, res) => {
     const message = [
       `Hi ${customerName},`,
       "",
-      `Your ShopNest order #${order.orderId} is ready for payment.`,
+      `Your ShopNest order #${order.orderId} is ready for secure checkout.`,
       "",
       "Order summary:",
       itemSummary,
@@ -98,8 +95,6 @@ const createOrder = async (req, res) => {
     return res.status(201).json({
       order,
       orderId: order.orderId,
-      clientSecret: paymentIntent.client_secret,
-      paymentIntentId: paymentIntent.id,
     });
   } catch (error) {
     console.error("Error creating order:", error);

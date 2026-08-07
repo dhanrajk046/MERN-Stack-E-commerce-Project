@@ -155,3 +155,7 @@
     grid-template-columns: 1fr;
   }
 }
+.home-products-link {
+  margin-top: 28px;
+  text-align: center;
+}

@@ -171,3 +171,16 @@
     flex-direction: column;
   }
 }
+
+.payment-element {
+  padding: 16px;
+  background: #09090b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+}
+
+.checkout-error {
+  margin: 0;
+  color: #fca5a5;
+  font-size: 0.9rem;
+}
