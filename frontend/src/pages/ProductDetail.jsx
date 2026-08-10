@@ -26,15 +26,15 @@ const ProductDetail = () => {
   }, [id]);
 
   const handleAddToCart = () => {
-    if (product) {
+    if (product && product.stock > 0) {
       dispatch(addToCart({
         productId: product._id,
         name: product.name,
         price: product.price,
         imageUrl: product.imageUrl,
-        qty: 1
+        qty: 1,
+        stock: product.stock,
       }));
-      alert('Successfully added to your cart!');
     }
   };
 
@@ -70,8 +70,8 @@ const ProductDetail = () => {
 
           {/* Cart & Stock Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <button onClick={handleAddToCart} className="btn" style={{ flexGrow: '1', padding: '18px', fontSize: '1.2rem' }}>
-              Add to Shopping Cart
+            <button onClick={handleAddToCart} className="btn" disabled={product.stock < 1} style={{ flexGrow: '1', padding: '18px', fontSize: '1.2rem' }}>
+              {product.stock > 0 ? 'Add to Shopping Cart' : 'Out of Stock'}
             </button>
           </div>
           

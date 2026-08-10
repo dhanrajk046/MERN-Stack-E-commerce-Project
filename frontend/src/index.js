@@ -6,6 +6,7 @@ import { store } from './redux/store';
 import { AuthProvider } from './context/AuthContext';
 import './styles/global.css';
 import './styles/responsive.css';
+import './styles/order.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

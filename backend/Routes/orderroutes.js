@@ -7,13 +7,15 @@ const {
   getMyOrders,
   getOrderById,
   updateOrderStatus,
-} = require('../controllers/orderController');
-const { confirmOrderPayment } = require('../controllers/paymentController');
+  cancelOrder,
+} = require('../Controllers/orderController');
+const { confirmOrderPayment } = require('../Controllers/paymentController');
 const router = express.Router();
 
 router.route('/').post(protect, createOrder).get(protect, admin, getOrders);
 router.route('/myorders').get(protect, getMyOrders);
 router.post('/:orderId/confirm-payment', protect, confirmOrderPayment);
+router.post('/:orderId/cancel', protect, cancelOrder);
 router.route('/:id').get(protect, getOrderById);
 router.route('/:id/status').put(protect, admin, updateOrderStatus);
 

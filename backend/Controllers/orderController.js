@@ -1,9 +1,9 @@
-const Order = require("../model/Order");
-const Product = require("../model/Product");
+const Order = require("../Model/Order");
+const Product = require("../Model/Product");
 const sendEmail = require("../utils/sendEmail");
 
 const createOrder = async (req, res) => {
-  const { items, shippingAddress } = req.body;
+  const { items, shippingAddress, paymentMethod = 'stripe' } = req.body;
 
   if (!Array.isArray(items) || items.length === 0) {
     return res
@@ -11,11 +11,16 @@ const createOrder = async (req, res) => {
       .json({ message: "An order must contain at least one item" });
   }
 
+  if (!['stripe', 'cod'].includes(paymentMethod)) {
+    return res.status(400).json({ message: 'Choose Cash on Delivery or Stripe checkout' });
+  }
+
   const addressFields = ['fullName', 'street', 'city', 'postalCode', 'country'];
   if (!shippingAddress || addressFields.some((field) => !String(shippingAddress[field] || '').trim())) {
     return res.status(400).json({ message: 'A complete shipping address is required' });
   }
 
+  const reservedItems = [];
   try {
     const orderItems = [];
     let totalPrice = 0;
@@ -51,11 +56,32 @@ const createOrder = async (req, res) => {
     }
 
     // Product prices are always read from MongoDB, never accepted from the client.
+    if (paymentMethod === 'cod') {
+      for (const item of orderItems) {
+        const result = await Product.updateOne(
+          { _id: item.product, stock: { $gte: item.quantity } },
+          { $inc: { stock: -item.quantity } },
+        );
+        if (result.modifiedCount !== 1) {
+          await Promise.all(reservedItems.map((reserved) => Product.updateOne(
+            { _id: reserved.product }, { $inc: { stock: reserved.quantity } },
+          )));
+          return res.status(409).json({ message: `Insufficient stock for ${item.name}` });
+        }
+        reservedItems.push(item);
+      }
+    }
+
     const order = await Order.create({
       user: req.user._id,
       items: orderItems,
-      totalPrice,
+      itemsPrice: totalPrice,
+      taxPrice: 0,
+      shippingPrice: 40,
+      totalPrice: totalPrice + 40,
       shippingAddress,
+      status: paymentMethod === 'cod' ? 'processing' : 'pending',
+      payment: { provider: paymentMethod, status: 'pending' },
     });
 
 
@@ -69,13 +95,14 @@ const createOrder = async (req, res) => {
     const message = [
       `Hi ${customerName},`,
       "",
-      `Your ShopNest order #${order.orderId} is ready for secure checkout.`,
+      `Your ShopNest order #${order.orderId} has been placed.`,
       "",
       "Order summary:",
       itemSummary,
       "",
-      `Total: INR ${totalPrice.toFixed(2)}`,
-      `Payment status: ${order.payment.status}`,
+      `Shipping: INR 40.00`,
+      `Total: INR ${(totalPrice + 40).toFixed(2)}`,
+      `Payment method: ${paymentMethod === 'cod' ? 'Cash on Delivery' : 'Stripe Checkout'}`,
       "",
       "We will notify you when your order status changes.",
     ].join("\n");
@@ -97,8 +124,43 @@ const createOrder = async (req, res) => {
       orderId: order.orderId,
     });
   } catch (error) {
+    if (paymentMethod === 'cod' && reservedItems.length) {
+      await Promise.all(reservedItems.map((item) => Product.updateOne(
+        { _id: item.product }, { $inc: { stock: item.quantity } },
+      )));
+    }
     console.error("Error creating order:", error);
     return res.status(500).json({ message: "Unable to create order" });
+  }
+};
+
+const cancelOrder = async (req, res) => {
+  try {
+    const { reason } = req.body;
+    if (!String(reason || '').trim()) return res.status(400).json({ message: 'Please provide a cancellation reason' });
+    const order = await Order.findOne({ orderId: req.params.orderId, user: req.user._id });
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (order.payment.provider !== 'cod') {
+      return res.status(400).json({ message: 'Online payments cannot be cancelled here. Contact support for payment assistance.' });
+    }
+    if (!['pending', 'processing'].includes(order.status)) {
+      return res.status(409).json({ message: 'This order can no longer be cancelled' });
+    }
+
+    const cancelled = await Order.findOneAndUpdate(
+      { _id: order._id, status: { $in: ['pending', 'processing'] } },
+      { $set: { status: 'cancelled', 'payment.status': 'cancelled', 'cancellation.reason': String(reason).trim(), 'cancellation.cancelledAt': new Date() } },
+      { new: true },
+    );
+    if (!cancelled) return res.status(409).json({ message: 'This order can no longer be cancelled' });
+
+    if (cancelled.payment.provider === 'cod') await Promise.all(cancelled.items.map((item) => Product.updateOne(
+      { _id: item.product }, { $inc: { stock: item.quantity } },
+    )));
+    return res.json(cancelled);
+  } catch (error) {
+    console.error('Error cancelling order:', error);
+    return res.status(500).json({ message: 'Unable to cancel order' });
   }
 };
 
@@ -190,4 +252,5 @@ module.exports = {
   getMyOrders,
   getOrderById,
   updateOrderStatus,
+  cancelOrder,
 };

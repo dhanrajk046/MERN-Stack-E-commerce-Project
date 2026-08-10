@@ -3,8 +3,8 @@ require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const connectDB = require("./config/db");
-const Product = require("./model/Product");
-const User = require("./model/User");
+const Product = require("./Model/Product");
+const User = require("./Model/User");
 
 const products = [
   {

@@ -102,6 +102,31 @@
   outline: none;
 }
 
+.product-search {
+  display: flex;
+  gap: 12px;
+  max-width: 640px;
+  margin-bottom: 30px;
+}
+
+.product-search .search-bar {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.search-button {
+  min-width: 100px;
+  padding: 0 20px;
+  color: #fff;
+  background: #f97316;
+  border: 1px solid #f97316;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.search-button:hover { background: #ea580c; }
+
 .search-bar:focus {
   border-color: #f97316;
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
@@ -154,6 +179,11 @@
   .product-detail {
     grid-template-columns: 1fr;
   }
+}
+
+@media (max-width: 480px) {
+  .product-search { gap: 8px; }
+  .search-button { min-width: 76px; padding: 0 12px; }
 }
 .home-products-link {
   margin-top: 28px;

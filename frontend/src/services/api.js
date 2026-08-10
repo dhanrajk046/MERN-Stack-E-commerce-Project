@@ -44,13 +44,14 @@ export const authApi = {
 };
 
 export const ordersApi = {
-  create: (items, shippingAddress) => request("/orders", jsonRequest("POST", { items, shippingAddress })),
+  create: (items, shippingAddress, paymentMethod) => request("/orders", jsonRequest("POST", { items, shippingAddress, paymentMethod })),
   list: () => request("/orders"),
   mine: () => request("/orders/myorders"),
   getById: (orderId) => request(`/orders/${orderId}`),
   updateStatus: (orderId, status) =>
     request(`/orders/${orderId}/status`, jsonRequest("PUT", { status })),
   confirmPayment: (orderId) => request(`/orders/${orderId}/confirm-payment`, { method: "POST" }),
+  cancel: (orderId, reason) => request(`/orders/${orderId}/cancel`, jsonRequest("POST", { reason })),
 };
 
 export const paymentsApi = {

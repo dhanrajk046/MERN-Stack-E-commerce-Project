@@ -14,7 +14,7 @@ const Cart = () => {
   };
 
   const handleUpdateQty = (item, qty) => {
-    if (qty > 0) {
+    if (qty > 0 && (item.stock === undefined || qty <= item.stock)) {
       dispatch(addToCart({ ...item, qty }));
     }
   };
@@ -38,7 +38,7 @@ const Cart = () => {
                   <div className="qty-controls">
                     <button onClick={() => handleUpdateQty(item, item.qty - 1)}>-</button>
                     <span>{item.qty}</span>
-                    <button onClick={() => handleUpdateQty(item, item.qty + 1)}>+</button>
+                    <button onClick={() => handleUpdateQty(item, item.qty + 1)} disabled={item.stock !== undefined && item.qty >= item.stock}>+</button>
                   </div>
                   <button onClick={() => handleRemove(item.productId)} className="btn-remove">Remove</button>
                 </div>

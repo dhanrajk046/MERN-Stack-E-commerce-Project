@@ -11,8 +11,7 @@ const ProductCard = ({ product }) => {
         className="product-image"
         onError={(event) => {
           event.currentTarget.onerror = null;
-          event.currentTarget.src =
-            product.imageUrl || product.image || "/logo.jpg";
+          event.currentTarget.src = "/logo.jpg";
         }}
       />
       <div className="product-info">

@@ -6,14 +6,15 @@ import { productsApi } from '../services/api';
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const data = await productsApi.list();
         setProducts(data.slice(0, 4)); // Featured products
-      } catch (error) {
-        console.error(error);
+      } catch (requestError) {
+        setError('Featured products are unavailable right now. Please try again shortly.');
       } finally {
         setLoading(false);
       }
@@ -29,7 +30,11 @@ const Home = () => {
       </div>
       <h2>Featured Products</h2>
       {loading ? (
-        <div>Loading...</div>
+        <p className="page-state">Loading products...</p>
+      ) : error ? (
+        <p className="page-state page-state-error" role="alert">{error}</p>
+      ) : products.length === 0 ? (
+        <p className="page-state">No featured products are available yet.</p>
       ) : (
         <div className="product-grid">
           {products.map((product) => (

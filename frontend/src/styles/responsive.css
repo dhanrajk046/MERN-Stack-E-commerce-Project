@@ -1,9 +1,26 @@
 .status-page { max-width: 620px; margin: 48px auto; padding: 32px; text-align: center; background: #18181b; border: 1px solid #27272a; border-radius: 12px; }
 
+.page-state { padding: 28px 0; color: #d4d4d8; }
+.page-state-error { color: #fca5a5; }
+
+.site-footer { background: #09090b; border-top: 1px solid rgba(255, 255, 255, 0.05); padding: 40px 20px; margin-top: auto; }
+.site-footer-content { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; }
+.site-footer-links { display: flex; flex-wrap: wrap; gap: 12px 20px; }
+
+.admin-form-panel { max-width: 600px; margin: 40px auto; background: #18181b; padding: 40px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+.admin-form { display: flex; flex-direction: column; gap: 15px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+}
+
 @media (max-width: 768px) {
-  .navbar-links { width: 100%; justify-content: center; flex-wrap: wrap; gap: 12px 20px; }
   .cart-summary { position: static; }
   .checkout-content { padding: 24px 18px; }
+  .product-detail-wrapper { padding: 0 !important; }
+  .product-detail { padding: 24px; gap: 28px; }
+  .detail-info h2 { font-size: 2rem !important; }
+  .site-footer-content { align-items: flex-start; flex-direction: column; }
 }
 
 @media (max-width: 640px) {
@@ -17,6 +34,10 @@
   .product-image { height: 220px; }
   .product-detail { padding: 20px; gap: 24px; }
   .detail-info h2 { font-size: 1.8rem; }
+  .auth-form { padding: 28px 20px; }
+  .status-page { margin: 24px auto; padding: 24px 18px; }
+  .site-footer { padding: 32px 16px; }
+  .admin-form-panel { margin: 16px auto; padding: 24px 16px; }
 }
 
 @media (max-width: 480px) {
@@ -25,4 +46,6 @@
   .cart-item-details h4 { font-size: 1rem; margin-bottom: 8px; }
   .qty-controls { gap: 10px; margin: 10px 0; }
   .checkout-summary { text-align: left; }
+  .cart-summary { padding: 20px; }
+  .shipping-form input { min-width: 0; }
 }

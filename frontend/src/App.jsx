@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Home from './pages/Home';
+import Home from './pages/home';
 import Shop from './pages/Shop';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
@@ -11,10 +11,12 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import OrderSuccess from './pages/OrderSuccess';
+import OrderDetails from './pages/OrderDetails';
 import PaymentReturn from './pages/PaymentReturn';
 import About from './pages/About';
 import Disclaimer from './pages/Disclaimer';
 import ReturnPolicy from './pages/ReturnPolicy';
+import NotFound from './pages/NotFound';
 import AdminDashboard from './admin/AdminDashboard';
 import AddProduct from './admin/AddProduct';
 import AdminProducts from './admin/AdminProducts';
@@ -37,6 +39,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/ordersuccess" element={<OrderSuccess />} />
+          <Route path="/orders/:orderId" element={<OrderDetails />} />
           <Route path="/payment-return" element={<PaymentReturn />} />
           <Route path="/about" element={<About />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
@@ -47,6 +50,7 @@ function App() {
           <Route path="/admin/edit-product/:id" element={<EditProduct />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
       <Footer />

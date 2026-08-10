@@ -2,8 +2,17 @@ import React, { createContext, useCallback, useState } from 'react';
 
 export const AuthContext = createContext();
 
+const readStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem('userInfo') || 'null');
+  } catch {
+    localStorage.removeItem('userInfo');
+    return null;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('userInfo') || 'null'));
+  const [user, setUser] = useState(readStoredUser);
 
   const login = useCallback((userData) => {
     setUser(userData);

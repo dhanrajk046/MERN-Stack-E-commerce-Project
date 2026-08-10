@@ -73,8 +73,9 @@ const Profile = () => {
           {orders.map(order => (
             <div key={order._id} style={{ background: '#09090b', padding: '20px', borderRadius: '12px', border: '1px solid #27272a', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '20px' }}>
               <div>
-                <p style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '5px' }}>Order ID: <span style={{ color: '#fff' }}>{order._id}</span></p>
+                <p style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '5px' }}>Order ID: <Link to={`/orders/${order.orderId}`} style={{ color: '#fff' }}>{order.orderId}</Link></p>
                 <p style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '5px' }}>Placed On: <span style={{ color: '#fff' }}>{new Date(order.createdAt).toLocaleDateString()}</span></p>
+                <div className="profile-order-preview">{order.items?.slice(0, 3).map((item) => <img key={item.product} src={item.imageUrl || '/logo.jpg'} alt={item.name} onError={(event) => { event.currentTarget.src = '/logo.jpg'; }} />)}</div>
                 <p style={{ color: '#a1a1aa', fontSize: '0.9rem' }}>Total: <strong style={{ color: '#10b981' }}>₹{Number(order.totalPrice || 0).toFixed(2)}</strong></p>
               </div>
               <div>

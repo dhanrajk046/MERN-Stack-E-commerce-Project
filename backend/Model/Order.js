@@ -18,7 +18,14 @@ const orderSchema = new mongoose.Schema(
     orderId: { type: String, required: true, unique: true, index: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     items: { type: [orderItemSchema], required: true },
+    itemsPrice: { type: Number, required: true, min: 0 },
+    taxPrice: { type: Number, required: true, min: 0, default: 0 },
+    shippingPrice: { type: Number, required: true, min: 0, default: 40 },
     totalPrice: { type: Number, required: true, min: 0 },
+    cancellation: {
+      reason: { type: String, trim: true, maxlength: 500, default: '' },
+      cancelledAt: { type: Date, default: null },
+    },
     shippingAddress: {
       fullName: { type: String, required: true, trim: true },
       street: { type: String, required: true, trim: true },
@@ -32,7 +39,7 @@ const orderSchema = new mongoose.Schema(
       default: 'pending',
     },
     payment: {
-      provider: { type: String, enum: ['stripe'], default: 'stripe' },
+      provider: { type: String, enum: ['stripe', 'cod'], default: 'stripe' },
       paymentIntentId: { type: String, default: null, index: true },
       status: {
         type: String,

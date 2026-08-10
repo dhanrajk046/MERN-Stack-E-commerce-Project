@@ -5,7 +5,6 @@ const connectDB = require('./config/db');
 const path = require('path');
 
 dotenv.config();
-connectDB();
 
 const app = express();
 app.disable('x-powered-by');
@@ -32,11 +31,11 @@ app.use(cors({
 
 app.use(express.json({ limit: '1mb' }));
 
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/products', require('./routes/productRoutes'));
-app.use('/api/orders', require('./routes/orderRoutes'));
-app.use('/api/payments', require('./routes/paymentsRoutes'));
-app.use('/api/analytics', require('./routes/analyticsRoutes'));
+app.use('/api/auth', require('./Routes/authRoutes'));
+app.use('/api/products', require('./Routes/productRoutes'));
+app.use('/api/orders', require('./Routes/orderroutes'));
+app.use('/api/payments', require('./Routes/paymentsRoutes'));
+app.use('/api/analytics', require('./Routes/analyticsRoutes'));
 app.use('/api', (req, res) => res.status(404).json({ message: 'API route not found' }));
 
 // Serve frontend in production
@@ -58,4 +57,14 @@ app.use((error, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  } catch (error) {
+    console.error(`Unable to start server: ${error.message}`);
+    process.exit(1);
+  }
+};
+
+startServer();

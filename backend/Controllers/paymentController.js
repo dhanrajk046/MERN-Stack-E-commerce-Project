@@ -1,5 +1,5 @@
-const Order = require('../model/Order');
-const Product = require('../model/Product');
+const Order = require('../Model/Order');
+const Product = require('../Model/Product');
 const { getStripeClient } = require('../config/stripe');
 
 const createPaymentIntentForOrder = async (order) => {
@@ -34,19 +34,23 @@ const createCheckoutSession = async (req, res) => {
   try {
     const order = await Order.findOne({ orderId, user: req.user._id });
     if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (order.payment.provider !== 'stripe') return res.status(400).json({ message: 'This order uses Cash on Delivery' });
     if (order.payment.status === 'paid') return res.status(409).json({ message: 'Order is already paid' });
 
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     const session = await getStripeClient().checkout.sessions.create({
       mode: 'payment',
-      line_items: order.items.map((item) => ({
+      line_items: [...order.items.map((item) => ({
         price_data: {
           currency: 'inr',
           product_data: { name: item.name },
           unit_amount: Math.round(item.price * 100),
         },
         quantity: item.quantity,
-      })),
+      })), {
+        price_data: { currency: 'inr', product_data: { name: 'Shipping' }, unit_amount: Math.round((order.shippingPrice || 0) * 100) },
+        quantity: 1,
+      }],
       metadata: { orderId: order.orderId, userId: req.user._id.toString() },
       success_url: `${frontendUrl}/payment-return?orderId=${encodeURIComponent(order.orderId)}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${frontendUrl}/checkout`,

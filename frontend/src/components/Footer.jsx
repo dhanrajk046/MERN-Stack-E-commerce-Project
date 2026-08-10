@@ -3,25 +3,8 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer
-      style={{
-        background: "#09090b",
-        borderTop: "1px solid rgba(255, 255, 255, 0.05)",
-        padding: "40px 20px",
-        marginTop: "auto",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "20px",
-        }}
-      >
+    <footer className="site-footer">
+      <div className="site-footer-content">
         <div>
           <h3 style={{ color: "#f97316", marginBottom: "10px" }}>ShopNest</h3>
           <p style={{ color: "#a1a1aa", fontSize: "0.9rem" }}>
@@ -29,7 +12,7 @@ const Footer = () => {
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "20px" }}>
+        <div className="site-footer-links">
           <Link to="/about" style={{ color: "#a1a1aa", fontSize: "0.9rem" }}>
             About Us
           </Link>

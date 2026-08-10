@@ -23,7 +23,7 @@ const PaymentReturn = () => {
         if (!payment.verified) throw new Error('Your payment has not completed.');
         await ordersApi.confirmPayment(payment.orderId);
         dispatch(clearCart());
-        navigate('/ordersuccess', { replace: true });
+        navigate(`/orders/${payment.orderId}`, { replace: true });
       } catch (error) {
         setMessage(error.message || 'Unable to verify your payment. Please contact support if you were charged.');
       }

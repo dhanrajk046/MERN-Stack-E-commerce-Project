@@ -73,20 +73,11 @@ const EditProduct = () => {
   if (!user || user.role !== "admin") return null;
 
   return (
-    <div
-      style={{
-        maxWidth: "600px",
-        margin: "40px auto",
-        background: "#18181b",
-        padding: "40px",
-        borderRadius: "12px",
-        border: "1px solid rgba(255,255,255,0.05)",
-      }}
-    >
+    <div className="admin-form-panel">
       <h2 style={{ color: "#f97316", marginBottom: "20px" }}>Edit Product</h2>
       <form
         onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+        className="admin-form"
       >
         <input
           type="text"
