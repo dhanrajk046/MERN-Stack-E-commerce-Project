@@ -25,14 +25,14 @@
 
 ### 👉 [ShopNest - Live Application](https://shopnest-nqx7.onrender.com)
 
-The application is deployed on **Render** as a single full-stack service.
+ShopNest is deployed on **Render** as a single full-stack web service.
 
 The Express.js backend serves:
 
 - REST APIs through `/api/*`
 - React production build
 - Static frontend assets
-- Client-side React routes
+- React SPA routes
 
 ---
 
@@ -54,29 +54,26 @@ The Express.js backend serves:
 
 # 🚀 About ShopNest
 
-**ShopNest** is a full-stack MERN e-commerce application designed to simulate a modern production-style online shopping platform.
+**ShopNest** is a full-stack MERN e-commerce application designed to simulate
+a modern production-style online shopping platform.
 
-The project focuses on building a complete e-commerce ecosystem rather than only implementing a product listing interface.
-
-It includes:
+The project goes beyond basic CRUD functionality by combining:
 
 - User authentication
-- Product browsing
+- Product management
 - Shopping cart
 - Wishlist
-- Category filtering
+- Dynamic category filtering
 - Order management
-- User profiles
+- Stripe payment processing
+- Cloudinary image management
 - Admin dashboard
-- Product management
-- Cloudinary image uploads
-- Razorpay payment integration
 - AI-powered product description generation
 - AI-powered review summarization
 - Review sentiment analysis
 - RESTful APIs
-- Postman API documentation
-- Production deployment on Render
+- Postman API testing
+- Production deployment
 
 ---
 
@@ -91,6 +88,7 @@ It includes:
 - 🗂️ Dynamic category filtering
 - ❤️ Wishlist functionality
 - 🛒 Shopping cart
+- 💳 Secure Stripe checkout
 - 📦 Order placement
 - 📋 Order history
 - 👤 User profile
@@ -98,9 +96,9 @@ It includes:
 
 ---
 
-## 🛠️ Admin Dashboard
+# 🛠️ Admin Dashboard
 
-ShopNest includes a dedicated administration system for managing the platform.
+ShopNest includes a dedicated admin dashboard for managing the e-commerce platform.
 
 ### Admin capabilities include:
 
@@ -121,106 +119,109 @@ ShopNest includes a dedicated administration system for managing the platform.
 
 # 🤖 AI Features
 
-ShopNest integrates AI into the administrative workflow to automate repetitive tasks and provide useful insights.
+ShopNest integrates **Grok AI** into the administrative workflow.
 
-### AI-powered Product Description Generation
+## ✍️ AI Product Description Generation
 
-Administrators can generate product descriptions using AI instead of manually writing descriptions for every product.
+Administrators can generate product descriptions using AI, reducing the amount of manual content creation required when adding products.
 
-### AI Review Summarization
+## 📝 AI Review Summarization
 
 The system can summarize multiple customer reviews into a concise overview.
 
-### AI Sentiment Analysis
+## 📊 Review Sentiment Analysis
 
 Customer reviews can be analyzed to determine their general sentiment, helping administrators understand customer feedback more efficiently.
 
 ---
 
-# 💳 Payment Integration
+# 💳 Stripe Payment Integration
 
-ShopNest integrates **Razorpay** for payment processing.
+ShopNest integrates **Stripe** for secure online payment processing.
 
-The payment workflow is designed to support:
+The payment workflow supports:
 
-- Payment order creation
-- Payment processing
-- Payment verification
+- Creating Stripe Checkout Sessions
+- Redirecting customers to Stripe Checkout
+- Secure payment processing
+- Payment success handling
+- Payment cancellation handling
 - Order creation after successful payment
 
-> ⚠️ For local development, use your own Razorpay test credentials. Never commit real payment credentials to GitHub.
-
----
-
-# ☁️ Cloudinary Integration
-
-Product images are uploaded and managed using **Cloudinary**.
-
-The backend uses secure server-side handling for image uploads.
-
-### Benefits:
-
-- Cloud-based image storage
-- Optimized media delivery
-- Secure upload handling
-- Reduced dependency on local storage
-
----
-
-# 🛠️ Tech Stack
-
-## Frontend
-
-- React.js
-- React Router
-- Redux Toolkit
-- Context API
-- JavaScript
-- HTML5
-- CSS3
-
-## Backend
-
-- Node.js
-- Express.js
-- RESTful APIs
-- Middleware-based architecture
-- JWT Authentication
-
-## Database
-
-- MongoDB
-- Mongoose
-
-## AI
-
-- Grok AI
-
-## Payments
-
-- Razorpay
-
-## Cloud Storage
-
-- Cloudinary
-- Multer
-
-## Development & Testing
-
-- Git
-- GitHub
-- Postman
-- npm
-
-## Deployment
-
-- Render
-
----
-
-# 🏗️ Application Architecture
+### Payment Flow
 
 ```text
+Customer
+   │
+   ▼
+Shopping Cart
+   │
+   ▼
+Checkout
+   │
+   ▼
+Backend API
+   │
+   ▼
+Stripe Checkout Session
+   │
+   ▼
+Stripe Payment Page
+   │
+   ├───────────────┐
+   │               │
+   ▼               ▼
+Success          Cancel
+   │               │
+   ▼               ▼
+Order Created   Return to App
+
+⚠️ Never commit Stripe secret keys to GitHub.
+Use Stripe test keys during development and store all credentials in environment variables.
+
+☁️ Cloudinary Integration
+
+ShopNest uses Cloudinary for product image storage and management.
+
+Features
+Cloud-based image storage
+Secure image uploads
+Optimized media delivery
+Product image management
+Reduced dependency on local filesystem storage
+🛠️ Tech Stack
+Frontend
+React.js
+React Router
+Redux Toolkit
+Context API
+JavaScript
+HTML5
+CSS3
+Backend
+Node.js
+Express.js
+RESTful APIs
+Middleware-based architecture
+JWT Authentication
+Database
+MongoDB
+Mongoose
+AI
+Grok AI
+Payments
+Stripe
+Cloud Storage
+Cloudinary
+Multer
+Development & Testing
+Git
+GitHub
+Postman
+npm
+Deployment
+Render
+🏗️ Application Architecture
                          ┌──────────────────────┐
                          │       Browser        │
                          │      React SPA       │
@@ -230,14 +231,14 @@ The backend uses secure server-side handling for image uploads.
                                     ▼
                          ┌──────────────────────┐
                          │    Express Server    │
-                         │      Node.js         │
+                         │       Node.js        │
                          └──────────┬───────────┘
                                     │
                     ┌───────────────┼────────────────┐
                     │               │                │
                     ▼               ▼                ▼
              ┌────────────┐  ┌────────────┐  ┌─────────────┐
-             │  MongoDB   │  │ Cloudinary │  │  Razorpay   │
+             │  MongoDB   │  │ Cloudinary │  │    Stripe   │
              │  Database  │  │   Images   │  │   Payments  │
              └────────────┘  └────────────┘  └─────────────┘
                                     │
@@ -282,11 +283,11 @@ git clone https://github.com/dhanrajk046/MERN-Stack-E-commerce-Project.git
 cd MERN-Stack-E-commerce-Project
 2️⃣ Install Dependencies
 
-Install the root dependencies:
+Install root dependencies:
 
 npm install
 
-Then install backend dependencies:
+Install backend dependencies:
 
 cd backend
 npm install
@@ -312,8 +313,7 @@ MONGO_URI=mongodb://127.0.0.1:27017/shopnest
 
 JWT_SECRET=your_jwt_secret
 
-RAZORPAY_KEY_ID=your_razorpay_key_id
-RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+STRIPE_SECRET_KEY=your_stripe_secret_key
 
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
@@ -321,17 +321,17 @@ CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 
 GROK_API_KEY=your_grok_api_key
 
-⚠️ Never commit .env files or real API credentials to GitHub.
+⚠️ Do not commit .env files or API credentials to GitHub.
 
 🗄️ MongoDB Setup
 
 Make sure MongoDB is running locally.
 
-The default local database configuration is:
+Default local database:
 
 mongodb://127.0.0.1:27017/shopnest
 
-You can also use a MongoDB Atlas connection string.
+You can also use MongoDB Atlas.
 
 Example:
 
@@ -343,18 +343,14 @@ The project includes database seeding functionality for quickly populating the a
 Run:
 
 npm run seed
-
-The seed process can create sample products and an administrator account.
-
 Demo Admin Account
 Email: admin@shopnest.com
 Password: password123
 
-⚠️ This credential is intended only for local/demo usage. Change or remove it before using the application in a real production environment.
+⚠️ This account is intended only for local/demo usage.
+Change the credentials before using the application in a real production environment.
 
 ▶️ Run the Application
-
-The project uses concurrently to simplify local development.
 
 From the root directory:
 
@@ -366,11 +362,11 @@ Frontend → http://localhost:3000
 Backend  → http://localhost:5000
 🏭 Production Build
 
-Create the React production build with:
+Create the React production build:
 
 npm run build
 
-The generated frontend build is then served by the Express backend when running in production mode.
+When running in production mode, the Express backend serves the generated React build.
 
 ☁️ Deployment on Render
 
@@ -397,7 +393,7 @@ Deployment Architecture
              ▼                   ▼
           MongoDB          frontend/build
 🚀 Render Deployment Steps
-1️⃣ Push the Project to GitHub
+1️⃣ Push to GitHub
 git add .
 git commit -m "Prepare ShopNest for production"
 git push origin main
@@ -407,61 +403,61 @@ Open the Render Dashboard:
 
 https://dashboard.render.com
 
-Create a new:
+Create:
 
-Web Service
+New → Web Service
 
 Connect the GitHub repository.
 
-3️⃣ Configure Build Command
+3️⃣ Build Command
 
 Use:
 
 npm run render-build
 
-This installs the required dependencies and generates the React production build.
+This prepares the backend and frontend for production.
 
-4️⃣ Configure Start Command
+4️⃣ Start Command
 
 Use:
 
 npm start
 5️⃣ Configure Environment Variables
 
-Add the required production environment variables in:
-
-Render Dashboard
-        ↓
-Environment
-        ↓
-Environment Variables
+Add the production environment variables in the Render dashboard.
 
 Example:
 
 NODE_ENV=production
+
 MONGO_URI=your_production_mongodb_uri
+
 JWT_SECRET=your_production_jwt_secret
-RAZORPAY_KEY_ID=your_razorpay_key_id
-RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+
+STRIPE_SECRET_KEY=your_stripe_secret_key
+
 CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+
 GROK_API_KEY=your_grok_api_key
-🔒 Security Notes
+🔒 Security
 
 For production usage:
 
 Never expose .env files.
 Never commit API keys.
+Never expose Stripe secret keys.
 Use strong JWT secrets.
-Use Razorpay production credentials only when ready.
 Use separate development and production databases.
 Change default admin credentials.
-Restrict admin routes with proper authorization.
+Protect admin routes with authorization.
+Use Stripe test keys during development.
+Use Stripe production keys only when the application is ready for live payments.
 Keep dependencies updated.
 📮 Postman API Collection
 
-The repository includes:
+The repository includes a Postman collection:
 
 ShopNest - MERN.postman_collection.json
 
@@ -476,17 +472,15 @@ Users
 Cart
 Wishlist
 Orders
-Payments
+Stripe payment APIs
 Reviews
 Admin APIs
 
-Protected APIs can be tested using the authentication token.
+Protected endpoints can be tested using the authentication token.
 
 🔑 API Architecture
 
 The backend follows a RESTful API architecture.
-
-Example structure:
 
 /api
    │
@@ -510,9 +504,6 @@ Example structure:
    │
    └── admin
 🧪 Development Workflow
-
-The project was developed using a modern Git-based workflow.
-
 Development
      │
      ▼
@@ -534,7 +525,7 @@ Render Deployment
 Production Testing
 📈 What I Learned
 
-Building ShopNest helped strengthen my practical understanding of:
+Building ShopNest strengthened my practical understanding of:
 
 Full-stack MERN architecture
 React application development
@@ -544,29 +535,29 @@ JWT authentication
 Authorization and middleware
 MongoDB database design
 Mongoose
-Payment gateway integration
+Stripe payment integration
 Cloudinary integration
 AI API integration
 Admin dashboard architecture
 API testing with Postman
 Git and GitHub
-Production deployment
+Render deployment
 Environment variable management
-Debugging production issues
+Production debugging
+Full-stack application deployment
 🔮 Future Improvements
 
 Potential future improvements include:
 
-Advanced product recommendation system
-AI-powered personalized shopping
-Advanced analytics dashboard
-Redis caching
-Improved search with filters
-Product recommendation engine
-Automated email notifications
-Order tracking integration
-Performance optimization
-Automated CI/CD pipeline
+🤖 AI-powered personalized product recommendations
+📊 Advanced admin analytics
+⚡ Redis caching
+🔎 Advanced product search
+📧 Automated email notifications
+📦 Real-time order tracking
+🧠 AI-powered recommendation engine
+⚙️ Performance optimization
+🔄 Automated CI/CD pipeline
 👨‍💻 Developer
 
 Dhanraj Kumar
