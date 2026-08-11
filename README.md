@@ -4,6 +4,18 @@
   <p>🚀 An AI-powered full-stack MERN e-commerce platform. Features Stripe payments, a dynamic wishlist, interactive category filters, and an admin suite with Grok AI review summarization, sentiment analysis, and automated product description generation. A professionally engineered, full-stack E-commerce platform built strictly using modern standard React (CRA) on the frontend and Express/MongoDB on the backend.</p>
 </div>
 
+
+## Live Link : https://shopnest-nqx7.onrender.com
+
+<img width="1366" height="768" alt="image-1" src="https://github.com/user-attachments/assets/bc11952b-abf4-4c73-86c9-aba50abaae83" />
+
+
+<img width="1351" height="768" alt="image-2" src="https://github.com/user-attachments/assets/39a683d9-87d0-4edc-999d-439ad9a42e02" />
+
+
+<img width="1356" height="768" alt="image-3" src="https://github.com/user-attachments/assets/a19a09d4-92d9-43f6-afcd-3b88df37280d" />
+
+
 ---
 
 ## 🛠 Tech Stack Details
