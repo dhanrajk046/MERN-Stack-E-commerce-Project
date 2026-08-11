@@ -608,14 +608,3 @@ See the LICENSE file for more information.
 Built with ❤️ using the MERN Stack + AI
 
 </div> ```
-Important corrections I made
-Razorpay is used consistently throughout the README instead of mentioning Stripe in one place and Razorpay in another.
-Changed “Pure React.js” to proper terminology: React.js + Redux Toolkit + Context API.
-Corrected the Render deployment explanation — frontend and backend run together as one service.
-Added Cloudinary, Grok AI, Razorpay and environment variables consistently.
-Added a proper architecture diagram and project structure.
-Removed the misleading wording “full install across environments” from npm run build.
-Added proper security warnings around .env, API keys, Razorpay credentials and demo admin credentials.
-Made the README more professional and recruiter-friendly while keeping your actual project scope.
-Kept your live Render link, GitHub repository, screenshots and Postman documentation.
-Added a clear Developer / Project Links / License section.
