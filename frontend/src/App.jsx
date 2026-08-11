@@ -10,6 +10,7 @@ import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import Wishlist from './pages/Wishlist';
 import OrderSuccess from './pages/OrderSuccess';
 import OrderDetails from './pages/OrderDetails';
 import PaymentReturn from './pages/PaymentReturn';
@@ -23,10 +24,12 @@ import AdminProducts from './admin/AdminProducts';
 import EditProduct from './admin/EditProduct';
 import AdminOrders from './admin/AdminOrders';
 import AdminUsers from './admin/AdminUsers';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Navbar />
       <div className="main-content">
         <Routes>
@@ -38,6 +41,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/ordersuccess" element={<OrderSuccess />} />
           <Route path="/orders/:orderId" element={<OrderDetails />} />
           <Route path="/payment-return" element={<PaymentReturn />} />

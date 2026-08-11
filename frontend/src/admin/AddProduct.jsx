@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { productsApi } from "../services/api";
 
 const AddProduct = () => {
   const { user } = useContext(AuthContext);
@@ -15,11 +16,28 @@ const AddProduct = () => {
   });
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [aiGenerating, setAiGenerating] = useState(false);
 
   if (!user || user.role !== "admin") {
     navigate("/");
     return null;
   }
+
+  const handleAiGenerate = async () => {
+    if (!formData.name || !formData.category) {
+      alert("Please enter the Product Name and Category first so the AI can generate a relevant description.");
+      return;
+    }
+    setAiGenerating(true);
+    try {
+      const res = await productsApi.generateDescription(formData.name, formData.category);
+      setFormData((prev) => ({ ...prev, description: res.description }));
+    } catch (error) {
+      alert(error.message || "Failed to generate AI description.");
+    } finally {
+      setAiGenerating(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,15 +95,33 @@ const AddProduct = () => {
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           style={inputStyle}
         />
-        <textarea
-          placeholder="Description"
-          required
-          rows="4"
-          onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
-          }
-          style={inputStyle}
-        />
+        
+        {/* AI Description Container */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label style={{ color: "#a1a1aa", fontSize: "0.9rem" }}>Description</label>
+            <button
+              type="button"
+              onClick={handleAiGenerate}
+              className="btn"
+              style={{ padding: "6px 12px", fontSize: "0.82rem", background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)", boxShadow: "0 2px 8px rgba(234, 88, 12, 0.2)" }}
+              disabled={aiGenerating}
+            >
+              {aiGenerating ? "Generating..." : "🪄 Generate with Grok AI"}
+            </button>
+          </div>
+          <textarea
+            placeholder="Detailed product descriptions and key selling points..."
+            required
+            rows="5"
+            value={formData.description}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+            style={inputStyle}
+          />
+        </div>
+
         <input
           type="number"
           placeholder="Price"

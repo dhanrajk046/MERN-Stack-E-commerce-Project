@@ -4,6 +4,9 @@ const {
   registerUser,
   loginUser,
   getUsers,
+  getWishlist,
+  addToWishlist,
+  removeFromWishlist,
 } = require("../controllers/authController");
 const { protect, admin } = require("../middleware/authMiddleware");
 
@@ -15,5 +18,8 @@ router.post("/verify-email", async (req, res) => {
   // Placeholder for email verification implementation
   res.status(501).json({ message: "Not implemented" });
 });
+
+router.route("/wishlist").get(protect, getWishlist).post(protect, addToWishlist);
+router.route("/wishlist/:productId").delete(protect, removeFromWishlist);
 
 module.exports = router;

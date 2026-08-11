@@ -99,6 +99,19 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
     await connectDB();
+    
+    // Hotfix: update Portable Power Bank image URL in database on startup
+    try {
+      const Product = require("./model/Product");
+      await Product.updateOne(
+        { name: "Portable Power Bank 10000mAh" },
+        { $set: { imageUrl: "https://images.unsplash.com/photo-1585338107529-13afc5f02586?auto=format&fit=crop&w=800&q=80" } }
+      );
+      console.log("Database update: Portable Power Bank image URL successfully updated.");
+    } catch (dbErr) {
+      console.error("Failed to run database update on startup:", dbErr.message);
+    }
+
     app.listen(PORT, "0.0.0.0", () =>
       console.log(`Server running on port ${PORT}`),
     );

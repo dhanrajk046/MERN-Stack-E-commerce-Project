@@ -45,6 +45,11 @@ const Navbar = () => {
         <li>
           <Link to="/shop">Shop</Link>
         </li>
+        {user && (
+          <li>
+            <Link to="/wishlist">Wishlist</Link>
+          </li>
+        )}
         <li>
           <Link to="/cart">Cart ({cartQuantity})</Link>
         </li>

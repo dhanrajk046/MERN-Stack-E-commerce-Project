@@ -1,5 +1,6 @@
 const Product = require("../model/Product");
 const cloudinary = require("../config/cloudinary");
+const { generateReviewDigest, generateProductDescription } = require("../utils/aiService");
 
 const getProducts = async (req, res) => {
   try {
@@ -119,10 +120,72 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const createProductReview = async (req, res) => {
+  const { rating, comment } = req.body;
+
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    const alreadyReviewed = product.reviews.find(
+      (r) => r.user.toString() === req.user._id.toString()
+    );
+
+    if (alreadyReviewed) {
+      return res.status(400).json({ message: "Product already reviewed" });
+    }
+
+    const review = {
+      name: req.user.name,
+      rating: Number(rating),
+      comment: String(comment).trim(),
+      user: req.user._id,
+    };
+
+    product.reviews.push(review);
+    product.numReviews = product.reviews.length;
+    product.rating =
+      product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+      product.reviews.length;
+
+    const digest = await generateReviewDigest(product.name, product.reviews);
+    product.aiSummary = digest.summary;
+    product.aiSentiment = digest.sentiment;
+    product.aiTrustScore = digest.trustScore;
+
+    await product.save();
+    return res.status(201).json({ message: "Review added", reviews: product.reviews });
+  } catch (error) {
+    console.error("Error adding review:", error);
+    return res.status(500).json({ message: "Server error, failed to submit review" });
+  }
+};
+
+const generateDescription = async (req, res) => {
+  const { name, category, keypoints } = req.body;
+
+  try {
+    if (!name || !category) {
+      return res.status(400).json({ message: "Product name and category are required for AI generation" });
+    }
+
+    const description = await generateProductDescription(name, category, keypoints);
+    return res.json({ description });
+  } catch (error) {
+    console.error("Error generating description:", error);
+    return res.status(500).json({ message: "Server error, failed to generate description" });
+  }
+};
+
 module.exports = {
   getProducts,
   getProductById,
   createProduct,
   updateProduct,
   deleteProduct,
+  createProductReview,
+  generateDescription,
 };

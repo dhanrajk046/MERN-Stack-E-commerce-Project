@@ -102,8 +102,46 @@ const getUsers = async (req, res) => {
   }
 };
 
+const getWishlist = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate("wishlist");
+    res.json(user.wishlist || []);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const addToWishlist = async (req, res) => {
+  const { productId } = req.body;
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user.wishlist.includes(productId)) {
+      user.wishlist.push(productId);
+      await user.save();
+    }
+    res.json({ message: "Added to wishlist" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const removeFromWishlist = async (req, res) => {
+  const { productId } = req.params;
+  try {
+    const user = await User.findById(req.user._id);
+    user.wishlist = user.wishlist.filter((id) => id.toString() !== productId);
+    await user.save();
+    res.json({ message: "Removed from wishlist" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getUsers,
+  getWishlist,
+  addToWishlist,
+  removeFromWishlist,
 };

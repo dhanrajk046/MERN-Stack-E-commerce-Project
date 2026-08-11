@@ -35,12 +35,19 @@ export const productsApi = {
   update: (productId, product) =>
     request(`/products/${productId}`, jsonRequest("PUT", product)),
   remove: (productId) => request(`/products/${productId}`, { method: "DELETE" }),
+  createReview: (productId, rating, comment) =>
+    request(`/products/${productId}/reviews`, jsonRequest("POST", { rating, comment })),
+  generateDescription: (name, category, keypoints) =>
+    request("/products/generate-description", jsonRequest("POST", { name, category, keypoints })),
 };
 
 export const authApi = {
   register: (credentials) => request("/auth/register", jsonRequest("POST", credentials)),
   login: (credentials) => request("/auth/login", jsonRequest("POST", credentials)),
   users: () => request("/auth/users"),
+  getWishlist: () => request("/auth/wishlist"),
+  addToWishlist: (productId) => request("/auth/wishlist", jsonRequest("POST", { productId })),
+  removeFromWishlist: (productId) => request(`/auth/wishlist/${productId}`, { method: "DELETE" }),
 };
 
 export const ordersApi = {

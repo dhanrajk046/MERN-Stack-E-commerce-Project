@@ -7,19 +7,27 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  createProductReview,
+  generateDescription,
 } = require("../controllers/productController.js");
 const multer = require("multer");
 const upload = multer({ dest: "upload/" });
 
 const router = express.Router();
-// All products
 
+// AI description generation (Admin only)
+router.post("/generate-description", protect, admin, generateDescription);
+
+// All products
 router
   .route("/")
   .get(getProducts)
   .post(protect, admin, upload.single("image"), createProduct);
-//specific product
 
+// Specific product reviews
+router.route("/:id/reviews").post(protect, createProductReview);
+
+// Specific product
 router
   .route("/:id")
   .get(getProductById)

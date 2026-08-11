@@ -1,14 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../redux/cartSlice';
+import { AuthContext } from '../context/AuthContext';
+import { productsApi } from '../services/api';
 import '../styles/product.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useContext(AuthContext);
   const dispatch = useDispatch();
+
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  const [reviewSubmitLoading, setReviewSubmitLoading] = useState(false);
+  const [reviewError, setReviewError] = useState('');
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -35,6 +43,26 @@ const ProductDetail = () => {
         qty: 1,
         stock: product.stock,
       }));
+    }
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!comment.trim()) return;
+    setReviewSubmitLoading(true);
+    setReviewError('');
+    try {
+      await productsApi.createReview(id, rating, comment);
+      // Fetch updated product to display review list & AI summary immediately
+      const updatedRes = await fetch(`/api/products/${id}`);
+      const updatedData = await updatedRes.json();
+      setProduct(updatedData);
+      setComment('');
+      setRating(5);
+    } catch (err) {
+      setReviewError(err.message || 'Failed to submit review');
+    } finally {
+      setReviewSubmitLoading(false);
     }
   };
 
@@ -79,6 +107,110 @@ const ProductDetail = () => {
             {product.stock > 0 ? `● In Stock (${product.stock} units available)` : `● Temporarily Out of Stock`}
           </p>
 
+        </div>
+      </div>
+
+      {/* AI Digest Section */}
+      {product.aiSummary && (
+        <div className="ai-digest-card">
+          <div className="ai-digest-header">
+            <span className="ai-digest-badge">Grok AI Summary</span>
+            <h3 className="ai-digest-title">ShopNest AI Review Digest</h3>
+          </div>
+          <p className="ai-digest-summary">{product.aiSummary}</p>
+          <div className="ai-sentiment-container">
+            <div className="ai-sentiment-metric">
+              <span className="ai-sentiment-label">Customer Sentiment</span>
+              <span className="ai-sentiment-value">{product.aiSentiment || "Positive"}</span>
+            </div>
+            <div className="ai-sentiment-metric">
+              <span className="ai-sentiment-label">AI Trust Rating</span>
+              <span className="ai-sentiment-value">{product.aiTrustScore || 0}% positive response</span>
+            </div>
+            <div className="ai-progress-bar-wrapper">
+              <div className="ai-progress-bar-bg">
+                <div className="ai-progress-bar-fill" style={{ width: `${product.aiTrustScore || 0}%` }}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reviews Section */}
+      <div className="reviews-section">
+        <h3>Customer Reviews</h3>
+        <p style={{ color: '#a1a1aa', fontSize: '0.95rem' }}>
+          Average rating: {product.rating ? `${product.rating.toFixed(1)} ★` : 'No ratings yet'} ({product.numReviews || 0} reviews)
+        </p>
+        
+        <div className="reviews-grid">
+          {/* Reviews List */}
+          <div className="review-list">
+            {!product.reviews || product.reviews.length === 0 ? (
+              <p style={{ color: '#a1a1aa', fontStyle: 'italic' }}>
+                No reviews have been written for this product yet. Be the first to write a review!
+              </p>
+            ) : (
+              [...product.reviews].reverse().map((review) => (
+                <div key={review._id} className="review-card">
+                  <div className="review-header">
+                    <span className="review-author">{review.name}</span>
+                    <span className="review-date">{new Date(review.createdAt).toLocaleDateString()}</span>
+                  </div>
+                  <div className="review-stars">
+                    {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                  </div>
+                  <p className="review-comment">{review.comment}</p>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Submit Review Card */}
+          <div className="review-form-card">
+            {user ? (
+              <form onSubmit={handleReviewSubmit}>
+                <h3>Write a Review</h3>
+                {reviewError && <p style={{ color: '#ef4444', marginBottom: '10px', fontSize: '0.9rem' }}>{reviewError}</p>}
+                
+                <div className="rating-select-group">
+                  <label>Your Rating</label>
+                  <div className="rating-stars-input">
+                    {[1, 2, 3, 4, 5].map((val) => (
+                      <button
+                        key={val}
+                        type="button"
+                        className={`star-input-btn ${rating >= val ? 'active' : ''}`}
+                        onClick={() => setRating(val)}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="comment-textarea-group">
+                  <label>Your Review</label>
+                  <textarea
+                    required
+                    placeholder="Tell us what you liked or disliked about this product..."
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                </div>
+
+                <button type="submit" className="btn review-submit-btn" disabled={reviewSubmitLoading}>
+                  {reviewSubmitLoading ? 'Submitting...' : 'Submit Review'}
+                </button>
+              </form>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                <h3>Write a Review</h3>
+                <p style={{ color: '#a1a1aa', marginBottom: '20px' }}>You must be logged in to share your review.</p>
+                <Link to="/login" className="btn" style={{ display: 'block' }}>Log In Now</Link>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
