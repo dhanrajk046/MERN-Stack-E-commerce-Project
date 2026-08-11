@@ -42,40 +42,12 @@ app.use(
 
 app.use(express.json({ limit: "1mb" }));
 
-// Resilient requires for route modules to handle case differences across filesystems
-const safeRequire = (preferred, fallback) => {
-  try {
-    return require(preferred);
-  } catch (err) {
-    try {
-      return require(fallback);
-    } catch (err2) {
-      console.error(
-        `Failed to require '${preferred}' and fallback '${fallback}':`,
-        err.message,
-      );
-      throw err;
-    }
-  }
-};
-
-app.use("/api/auth", safeRequire("./routes/authRoutes", "./Routes/authRoutes"));
-app.use(
-  "/api/products",
-  safeRequire("./routes/productRoutes", "./Routes/productRoutes"),
-);
-app.use(
-  "/api/orders",
-  safeRequire("./routes/orderRoutes", "./Routes/orderRoutes"),
-);
-app.use(
-  "/api/payments",
-  safeRequire("./routes/paymentsRoutes", "./Routes/paymentsRoutes"),
-);
-app.use(
-  "/api/analytics",
-  safeRequire("./routes/analyticsRoutes", "./Routes/analyticsRoutes"),
-);
+// Register API routes
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/products", require("./routes/productRoutes"));
+app.use("/api/orders", require("./routes/orderRoutes"));
+app.use("/api/payments", require("./routes/paymentsRoutes"));
+app.use("/api/analytics", require("./routes/analyticsRoutes"));
 app.use("/api", (req, res) =>
   res.status(404).json({ message: "API route not found" }),
 );
