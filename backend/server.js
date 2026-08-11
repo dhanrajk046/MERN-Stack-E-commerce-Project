@@ -14,7 +14,20 @@ app.disable("x-powered-by");
 app.set("trust proxy", 1);
 
 // Security headers
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "default-src": ["'self'"],
+        "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        "font-src": ["'self'", "https://fonts.gstatic.com"],
+        "img-src": ["'self'", "data:", "https://images.unsplash.com", "https://res.cloudinary.com"],
+        "connect-src": ["'self'", "http://localhost:5000", "http://127.0.0.1:5000", "https://shopnest-nqx7.onrender.com", "https://api.stripe.com"],
+      },
+    },
+  })
+);
 
 // Gzip compression for static assets and API responses
 app.use(compression());
