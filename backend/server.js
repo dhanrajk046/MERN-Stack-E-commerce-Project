@@ -1,6 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const helmet = require("helmet");
+const compression = require("compression");
 const connectDB = require("./config/db");
 const path = require("path");
 
@@ -8,6 +10,14 @@ dotenv.config();
 
 const app = express();
 app.disable("x-powered-by");
+// Trust proxy (Render/Heroku) so secure cookies and rate limiters work correctly
+app.set("trust proxy", 1);
+
+// Security headers
+app.use(helmet());
+
+// Gzip compression for static assets and API responses
+app.use(compression());
 
 const allowedOrigins = new Set(
   [

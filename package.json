@@ -9,6 +9,7 @@
     "build": "npm --prefix frontend run build",
     "render-build": "npm install && npm --prefix backend install && npm --prefix frontend install && npm --prefix frontend run build",
     "start": "npm --prefix backend start",
+    "start:prod": "npm run build && npm --prefix backend start",
     "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "start:backend": "npm --prefix backend run dev",
     "start:frontend": "npm --prefix frontend start",
