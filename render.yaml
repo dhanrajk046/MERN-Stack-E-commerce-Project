@@ -2,6 +2,7 @@ services:
   - type: web
     name: shopnest
     runtime: node
+    plan: free
     buildCommand: npm run render-build
     startCommand: npm start
     autoDeploy: true
