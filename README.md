@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://cdn-icons-png.flaticon.com/512/3514/3514491.png" alt="ShopNest Logo" width="80" />
   <h1>ShopNest - Full-Stack MERN E-Commerce App</h1>
-  <p>A professionally engineered, full-stack E-commerce platform built strictly using modern standard React (CRA) on the frontend and Express/MongoDB on the backend.</p>
+  <p>🚀 An AI-powered full-stack MERN e-commerce platform. Features Stripe payments, a dynamic wishlist, interactive category filters, and an admin suite with Grok AI review summarization, sentiment analysis, and automated product description generation. A professionally engineered, full-stack E-commerce platform built strictly using modern standard React (CRA) on the frontend and Express/MongoDB on the backend.</p>
 </div>
 
 ---
