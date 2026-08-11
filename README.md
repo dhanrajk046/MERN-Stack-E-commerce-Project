@@ -7,7 +7,7 @@
   <p>
     🚀 A professionally engineered, full-stack e-commerce platform built with
     React.js, Node.js, Express.js, and MongoDB, featuring AI-powered admin tools,
-    Razorpay payments, dynamic wishlists, category filtering, Cloudinary image
+    Stripe payments, dynamic wishlists, category filtering, Cloudinary image
     management, and a complete admin dashboard.
   </p>
 
