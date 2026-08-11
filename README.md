@@ -84,3 +84,19 @@ The server codebase features a seamless fallback mechanic leveraging Node `proce
 
 This repository includes a fully-scaffolded API testing toolkit: **`ShopNest_Postman_Collection.json`**.
 Simply Import this file directly into the local Postman IDE. It features variables like `{{token}}` properly mapped to effortlessly check protected admin/user/order payloads. Happy coding!
+
+                    Render
+                      │
+              ShopNest Web Service
+                      │
+                 Express :PORT
+                      │
+          ┌───────────┴───────────┐
+          │                       │
+       /api/*                 React SPA
+          │                       │
+      MongoDB                 frontend/build
+
+      ##You do not need a separate frontend Render service.
+
+And concurrently can remain for local development. It doesn't need to be used in production.
